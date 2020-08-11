@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="./js/jquery-3.5.1.js"></script>
+
+</head>
+
+<body>
+  <script>
+    let well_id = ['x6-40-S738', 'X4-3-B642', 'X5-D2-119', 'X6-40-S739', 'X2-1-S705'];
+    $.ajax({
+      url: "http://127.0.0.1:54315/api/Xm/testget",
+      type: "get",
+      dataType: "json",
+      traditional: true,
+      data: {
+        jh: well_id
+      },
+      success: function (res){
+        console.info(res);
+      }
+    });
+  </script>
+</body>
+
+</html>
