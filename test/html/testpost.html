@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.20.0-0/axios.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        let param = new URLSearchParams()
+        param.append('page', 10)
+        param.append('limit', 2)
+        param.append('jhmc', '井3')
+        axios.post('http://127.0.0.1:54315/api/Xm/testpost', param)
+            .then(function (response) {
+                console.info(response);
+            });
+    </script>
+</body>
+</html>
