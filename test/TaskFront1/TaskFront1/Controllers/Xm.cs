@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RabbitSqlLib;
-using TaskFront1.statusInfo;
+using TaskFront1.Entity;
 
 namespace TaskFront1.Controllers
 {
@@ -38,7 +38,7 @@ namespace TaskFront1.Controllers
         public StateInfo testget([FromQuery] List<string> jh)
         {
             StateInfo si = new StateInfo();
-            string strr = "'" + string.Join("','", jh.ToArray()) + "'";
+            string str = "'" + string.Join("','", jh.ToArray()) + "'";
             RabbitSqlLib.DBEntity dBEntity = new DBEntity();
             dBEntity.DBType = "oracle";
             dBEntity.DBPort = "1521";
@@ -49,17 +49,16 @@ namespace TaskFront1.Controllers
             string dBType = "";
             string connstr = dBEntity.GetConnStr(out dBType);
             RabbitAccess access = new RabbitAccess(dBType, connstr);
-            string sql = "select * from ts_j_basicinfo where BZJH in (" + strr + ") ";
+            string sql = "select * from ts_j_basicinfo where BZJH in (" + str + ") ";
             DataTable dt = access.GetDataTable(sql);
             si.data = dt;
             return si;
         }
 
         [HttpPost("testpost")]
-        public StateInfo testpost([FromForm] List<string> jh)
+        public StateInfo testpost([FromForm] PageHelper ph)
         {
             StateInfo si = new StateInfo();
-            string strr = "'" + string.Join("','", jh.ToArray()) + "'";
             RabbitSqlLib.DBEntity dBEntity = new DBEntity();
             dBEntity.DBType = "oracle";
             dBEntity.DBPort = "1521";
@@ -70,7 +69,13 @@ namespace TaskFront1.Controllers
             string dBType = "";
             string connstr = dBEntity.GetConnStr(out dBType);
             RabbitAccess access = new RabbitAccess(dBType, connstr);
-            string sql = "select * from ts_j_basicinfo where BZJH in (" + strr + ") ";
+            string sql = "select * from ( " +
+            "select row_limit.*, rownum rownum_ from(" +
+            "select count_num.*, count(1)over() totalnum_ from(" +
+            "select * from ts_j_basicinfo  order by bzjh, tcrq" +
+            ") count_num" +
+            ") row_limit where rownum <= " + ph.page * ph.limit + "" +
+            ")where rownum_ > " + ph.page + "";
             DataTable dt = access.GetDataTable(sql);
             si.data = dt;
             return si;
